@@ -3,8 +3,8 @@ package conf
 
 import (
 	"encoding/json"
+	"jin/pkg"
 	"os"
-	"path/filepath"
 )
 
 type BuildConfig struct {
@@ -21,33 +21,6 @@ type Library struct {
 	Path string `json:"path"`
 }
 
-// detectLanguage はファイル名リストから言語を推測する
-func detectLanguage(files []string) []string {
-	langMap := map[string]string{
-		".c":   "C",
-		".h":   "C",
-		".s":   "ASM",
-		".asm": "ASM",
-		".go":  "Go",
-		".cpp": "C++",
-		".hpp": "C++",
-		".f":   "Fortran",
-		".f90": "Fortran",
-	}
-	var languages []string
-	seen := make(map[string]bool)
-	for _, file := range files {
-		ext := filepath.Ext(file)
-		if lang, ok := langMap[ext]; ok {
-			if !seen[lang] {
-				languages = append(languages, lang)
-				seen[lang] = true
-			}
-		}
-	}
-	return languages
-}
-
 func LoadBuildConfig(path string) (BuildConfig, error) {
 	var config BuildConfig
 	data, err := os.ReadFile(path)
@@ -59,6 +32,6 @@ func LoadBuildConfig(path string) (BuildConfig, error) {
 		return config, err
 	}
 	// 言語を推測する
-	config.Lang = detectLanguage(config.Source)
+	config.Lang = pkg.DetectLanguages(config.Source)
 	return config, nil
 }

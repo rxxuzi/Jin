@@ -21,10 +21,7 @@ type Lang struct {
 
 // NewBuild initializes a new build context with source and ignore paths
 func NewBuild(sourcePaths, ignorePaths []string) *Build {
-	srcFiles := set.SliceToSet(sourcePaths)
-	ignoreFiles := set.SliceToSet(ignorePaths)
-
-	files := set.Diff(srcFiles, ignoreFiles)
+	files := set.Diff(sourcePaths, ignorePaths)
 
 	// Prepare the language map
 	langFiles := pkg.CategorizeFilesByLanguage(files)
